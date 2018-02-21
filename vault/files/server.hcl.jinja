@@ -5,6 +5,16 @@ backend "s3" {
 }
 {% endif -%}
 
+{%- if vault.storage and vault.storage.type == 'consul' %}
+storage "consul" {
+  address = "{{ vault.storage.address }}"
+  path    = "{{ vault.storage.path }}"
+  {% if vault.storage.token -%}
+  token   = "{{ vault.storage.token }}"
+  {% endif -%}
+}
+{% endif %}
+
 listener "{{ vault.listen_protocol }}" {
   address = "{{ vault.listen_address }}:{{ vault.listen_port }}"
   tls_disable = {{ vault.tls_disable }}
