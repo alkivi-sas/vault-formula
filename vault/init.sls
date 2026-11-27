@@ -62,14 +62,14 @@ verify vault:
 
 install vault:
   cmd.run:
-    - name: unzip /tmp/vault_{{ vault.version }}_linux_amd64.zip -d /usr/local/bin && chmod 0755 /usr/local/bin/vault && chown root:root /usr/local/bin/vault
+    - name: unzip -o /tmp/vault_{{ vault.version }}_linux_amd64.zip -d /tmp/vault_{{ vault.version }} && install -m 0755 -o root -g root /tmp/vault_{{ vault.version }}/vault /usr/local/bin/vault
     - require:
       - cmd: download vault
       - pkg: unzip
       {% if vault.secure_download %}
       - cmd: verify vault
       {% endif %}
-    - creates: /usr/local/bin/vault
+    - unless: /usr/local/bin/vault version | grep -q '^Vault v{{ vault.version }} '
 
 vault set cap mlock:
   cmd.run:
